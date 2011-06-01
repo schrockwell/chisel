@@ -1,0 +1,24 @@
+#! /usr/bin/env ruby
+
+require 'chisel/wrapper'
+require 'optparse'
+
+if ARGV.count == 0
+	w = Wrapper.new('.')
+	w.run
+else
+	
+	case ARGV[0].downcase.to_sym
+		
+	when :new
+		# TODO: Add checking for existing site, with option to "force" creation
+		
+		puts 'Creating new Chisel site in the current directory...'
+		SiteDirectory.create('.')
+		puts 'Done! Run \'chisel\' to create your site!'
+		
+	when :help
+		
+	end
+	
+end

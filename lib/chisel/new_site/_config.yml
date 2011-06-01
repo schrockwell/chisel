@@ -1,0 +1,17 @@
+###############################################################################
+# Chisel site configuration file
+# 
+# For more information on the format of this configuration file:
+#
+#   http://www.yaml.org/
+#
+# YAML does not use tabs for indentation! Instead, use two spaces per
+# indentation level.
+###############################################################################
+
+# The output directory is the root directory where the site will be generated. 
+# This directory will be completely replaced every time the generator is run.
+output_dir: _output
+
+# Any further configuration options specified will be available to views in the 
+# variable @site_dir.config.
