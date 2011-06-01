@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
 	s.email = 'schrockwell@gmail.com'
 	s.summary = 'A static Web site generator.'
 	s.description = 'Chisel is tool to generate simple, resource-based static Web sites.'
+	s.homepage = 'https://github.com/schrockwell/chisel'
 	
 	s.executables = ['chisel']
 	
