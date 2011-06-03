@@ -1,6 +1,8 @@
 require 'yaml'
 require 'erb'
 require 'pathname'
+require 'RedCloth'
+require 'maruku'
 
 class View
 	
@@ -116,6 +118,15 @@ class View
 		
 		content = @erb.result(bynding)
 		
+		# Also evaluate any markup
+		
+		case second_extension
+		when 'textile'
+			content = RedCloth.new(content).to_html
+		when 'md'
+			content = Maruku.new(content).to_html
+		end
+		
 		# Now evaluate the layout
 		
 		if bynding.eval('layout')
@@ -139,6 +150,12 @@ private
 		matches = file.match(/---\n(.*)\n---\n(.*)/m)
 		return file unless matches and matches.size > 2
 		matches[2]
+	end
+	
+	def second_extension
+		tokens = Pathname.new(@path).basename.to_s.split('.')
+		return nil if tokens.length < 3
+		return tokens[-2].downcase
 	end
 	
 end
