@@ -3,6 +3,7 @@ class ViewHelper
 	
 	def initialize(site_dir, output_path)
 		@site_dir = site_dir
+		@config = @site_dir.config
 		@output_path = output_path
 	end
 	

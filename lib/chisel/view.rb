@@ -1,12 +1,12 @@
 require 'yaml'
 require 'erb'
 require 'pathname'
-require 'RedCloth'
-require 'maruku'
 
 class View
 	
-	attr_accessor :type, :path, :view, :header, :site_dir, :resource
+	MarkupExtensions = ['erb', 'md', 'textile']
+	
+	attr_accessor :type, :path, :view, :header, :site_dir, :resource, :raw_content
 	@@cache = []
 	@@output_paths = []
 	
@@ -42,9 +42,9 @@ class View
 
 		raise 'Cannot initialize view without a path' unless @path
 		
-		file = File.read(@path)
-		@header = yaml_header(file).symbolize_keys
-		@erb = ERB.new(remove_yaml_header(file))
+		@raw_content = File.read(@path)
+		@header = yaml_header(@raw_content).symbolize_keys
+		@erb = ERB.new(remove_yaml_header(@raw_content))
 		@@cache << self
 		
 	end
@@ -59,7 +59,11 @@ class View
 		
 	end
 	
-	def run(output_path, options = {})
+	def run(options = {})
+		view_relative_dir = @path.relative_path_from(@site_dir).dirname
+		file_output_dir = @site_dir.output_dir.join(view_relative_dir)
+		output_path = file_output_dir.join(output_basename)
+		file_output_dir.mkpath
 		
 		return if @@output_paths.index(output_path) or output_path.exist?
 		@@output_paths << output_path
@@ -77,7 +81,11 @@ class View
 	
 	def evaluate(output_path, options = {})
 		
-		puts "Evaluating #{output_path}..."
+		if @type == :layout
+			puts "Evaluating layout for #{output_path}..."
+		else
+			puts "Evaluating #{output_path}..."
+		end
 		
 		helper = ViewHelper.new(@site_dir, output_path)
 		
@@ -110,21 +118,41 @@ class View
 				vars[:resource] = options[:resource] # alias as "resource"
 			end
 			
-			bynding = vars.to_binding(helper)	
+			bynding = vars.to_binding(helper)
 			
 		end
 		
 		# Evaluate the content with the binding
 		
-		content = @erb.result(bynding)
+		content = remove_yaml_header(@raw_content)
 		
-		# Also evaluate any markup
-		
-		case second_extension
-		when 'textile'
-			content = RedCloth.new(content).to_html
-		when 'md'
-			content = Maruku.new(content).to_html
+		markup_extensions.reverse.each do |extension|
+			case extension.downcase
+			when 'erb'
+				content = @erb.result(bynding)
+			when 'textile'
+				begin
+					require 'RedCloth'
+				rescue LoadError
+					puts "
+The RedCloth gem is required to evaluate Textile markup. Please run:
+
+    gem install RedCloth"
+					exit
+				end
+				content = RedCloth.new(content).to_html
+			when 'md'
+				begin
+					require 'maruku'
+				rescue LoadError
+					puts "
+The Maruku gem is required to evaluate Markdown markup. Please run:
+
+    gem install maruku"
+					exit
+				end
+				content = Maruku.new(content).to_html
+			end
 		end
 		
 		# Now evaluate the layout
@@ -152,10 +180,23 @@ private
 		matches[2]
 	end
 	
-	def second_extension
+	def markup_extensions
 		tokens = Pathname.new(@path).basename.to_s.split('.')
-		return nil if tokens.length < 3
-		return tokens[-2].downcase
+		return nil if tokens.length == 1
+		
+		i = tokens.length
+		tokens.reverse.each do |token|
+			break unless MarkupExtensions.index(token)
+			i = i - 1
+		end
+		
+		return tokens[i..-1].map { |t| t.downcase }
+	end
+	
+	def output_basename
+		return @path.basename unless markup_extensions
+		extensions = '.' + markup_extensions.join('.')
+		return @path.basename(extensions)
 	end
 	
 end

@@ -25,19 +25,9 @@ class Wrapper
 		view_paths = Pathname.glob(@site_dir.join('[^_]*.*'))
 		view_paths += Pathname.glob(@site_dir.join('[^_]**/**/*.*'))
 		
-		view_paths.each do |view_path|	
-			output_filename = view_path.basename('.erb')
-			view_relative_dir = view_path.relative_path_from(@site_dir).dirname
-			file_output_dir = @site_dir.output_dir.join(view_relative_dir)
-			output_path = file_output_dir.join(output_filename)
-			file_output_dir.mkpath
-			
-			if view_path.extname == '.erb'
-				view = View.fetch(:path => view_path, :site_dir => @site_dir)
-				view.run(output_path)
-			elsif not view_path.directory?
-				FileUtils.copy(view_path.expand_path, output_path)
-			end
+		view_paths.each do |view_path|			
+			view = View.fetch(:path => view_path, :site_dir => @site_dir)
+			view.run
 		end
 	end
 
