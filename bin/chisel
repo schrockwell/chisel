@@ -3,22 +3,43 @@
 require 'chisel/wrapper'
 require 'optparse'
 
-if ARGV.count == 0
-	w = Wrapper.new('.')
-	w.run
-else
+module Chisel
+	if ARGV.count == 0
+		w = Wrapper.new('.')
+		w.run
+	else
 	
-	case ARGV[0].downcase.to_sym
+		case ARGV[0].downcase
 		
-	when :new
-		# TODO: Add checking for existing site, with option to "force" creation
+		when 'new'
+			# TODO: Add checking for existing site, with option to "force" creation
 		
-		puts 'Creating new Chisel site in the current directory...'
-		SiteDirectory.create('.')
-		puts 'Done! Run \'chisel\' to create your site!'
+			if ARGV.length == 1 then
+				puts 'Creating new Chisel site in the current directory...'
+				SiteDirectory.create('.')
+				puts 'Done. Run \'chisel\' to create your site.'
+			else
+				dir = ARGV[1]
+				puts "Creating new Chisel site in directory '#{dir}'..."
+				SiteDirectory.create(dir)
+				puts "Done. Go into \'#{dir}\' and run \'chisel\' to create your site."
+			end
 		
-	when :help
+		when 'resource'
+			
+			if ARGV.length == 1 then
+				# TODO: Something
+			else
+				site_dir = SiteDirectory.new('.')
+				case ARGV[1].downcase
+				when 'new'
+					site_dir.create_resource(ARGV[2])
+				end
+			end
 		
+		when 'help'
+		
+		end
+	
 	end
-	
 end

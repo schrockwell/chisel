@@ -1,5 +1,13 @@
 class String
 	
+	def underscored?
+		self[0].downcase == self[0]
+	end
+	
+	def camelized?
+		self[0].upcase == self[0]
+	end
+	
 	# Converts 'Foo::HerpDerp' to 'foo/herp_derp'
 	def underscore
 		tokens = self.split('::')
