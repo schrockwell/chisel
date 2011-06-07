@@ -1,5 +1,7 @@
 module Chisel
 	class ViewHelper
+		#include Chisel::Resources
+				
 		attr_accessor :site_dir, :output_path
 	
 		def initialize(site_dir, output_path)
