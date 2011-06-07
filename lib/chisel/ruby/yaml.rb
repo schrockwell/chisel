@@ -1,13 +1,13 @@
 module YAML
 	module Syck
 		def YAML.remove_header(string)
-			matches = string.match(/---\n(.*)\n---\n(.*)/m)
+			matches = string.match(/---\r*\n(.*)\n---\r*\n(.*)/m)
 			return string unless matches and matches.size > 2
 			matches[2]
 		end
 
 		def YAML.header_string(string)
-			matches = string.match(/---\n(.*)\n---/m)
+			matches = string.match(/---\r*\n(.*)\r*\n---/m)
 			return '' unless matches and matches.size > 1
 			matches[1]
 		end

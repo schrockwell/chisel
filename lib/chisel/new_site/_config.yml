@@ -14,4 +14,4 @@
 output_dir: _output
 
 # Any further configuration options specified will be available to views in the 
-# variable @site_dir.config.
+# variable @config.

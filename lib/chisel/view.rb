@@ -106,7 +106,7 @@ module Chisel
 			else
 				header = YAML.load(header_string).symbolize_keys
 			end
-		
+			
 			# Maintin the binding if we were passed one; otherwise,
 			# create a brand new binding from our header info
 		

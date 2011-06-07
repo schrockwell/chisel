@@ -23,13 +23,20 @@ module Chisel
 			@site_dir.clear_output_dir
 		
 			# Get all views in the root site directory as well
-			# as any subdirectories (recursive)
+			# as any subdirectories (recursive). Don't include
+			# any files or folders beginning with an underscore.
 			view_paths = Pathname.glob(@site_dir.join('[^_]*.*'))
 			view_paths += Pathname.glob(@site_dir.join('[^_]**/**/*.*'))
 		
-			view_paths.each do |view_path|			
-				view = View.fetch(:path => view_path, :site_dir => @site_dir)
-				view.run
+			view_paths.each do |view_path|
+				if view_path.extname == '.erb'
+					view = View.fetch(:path => view_path, :site_dir => @site_dir)
+					view.run
+				else
+					output_path = @site_dir.output_dir.join(view_path)
+					output_path.dirname.mkpath
+					FileUtils.cp(view_path, output_path)
+				end
 			end
 		end
 

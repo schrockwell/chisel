@@ -75,6 +75,7 @@ module Chisel
 		end
 	
 		def view_with_extension(view)
+			view = "#{view}index" if view[-1] == '/'
 			return "#{view}.html" if File.basename(view).split('.').count < 2
 			view
 		end

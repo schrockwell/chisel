@@ -34,7 +34,7 @@ module Chisel
 			link_to(href, text, options)
 		end
 	
-		def link_to_page(page, text, options = {})
+		def link_to_page(page, text, options = {})			
 			page_output_path = @site_dir.page_output_path(page)
 			href = page_output_path.relative_path_from(@output_path.dirname).to_s
 		
@@ -53,7 +53,7 @@ module Chisel
 				end
 			end
 		
-			href = href[0..-11] if href.end_with?('index.html') and href != 'index.html'
+			href = href[0..-11] if href.end_with?('index.html')
 		
 			"<a href=\"#{href}\"#{attribute_string}>#{text}</a>"
 		end
