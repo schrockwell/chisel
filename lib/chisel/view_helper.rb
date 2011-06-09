@@ -1,7 +1,5 @@
 module Chisel
 	class ViewHelper
-		#include Chisel::Resources
-				
 		attr_accessor :site_dir, :output_path
 	
 		def initialize(site_dir, output_path)
@@ -55,7 +53,7 @@ module Chisel
 				end
 			end
 		
-			href = href[0..-11] if href.end_with?('index.html')
+			href = href[0..-11] if href.end_with?('index.html') and href != 'index.html'
 		
 			"<a href=\"#{href}\"#{attribute_string}>#{text}</a>"
 		end

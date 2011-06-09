@@ -26,7 +26,7 @@ module Chisel
 		
 			@path = Pathname.new(options[:path]) if options[:path]
 			@site_dir = SiteDirectory.new(options[:site_dir]) if options[:site_dir]
-		
+			
 			if options[:resource]
 				@type = :resource
 				@resource = options[:resource]
@@ -96,6 +96,8 @@ module Chisel
 			
 			header_vars = {}
 			if options[:resource]
+				resource_key = options[:resource].resource_type.to_sym
+				header_vars[resource_key] = options[:resource]
 				header_vars[:resource] = options[:resource]
 			end
 			

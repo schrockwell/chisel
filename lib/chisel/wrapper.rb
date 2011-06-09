@@ -10,8 +10,6 @@ require 'chisel/ruby/hash'
 require 'chisel/ruby/string'
 require 'chisel/ruby/yaml'
 
-require 'chisel/resources'
-
 module Chisel
 	class Wrapper
 		attr_accessor :site_dir
