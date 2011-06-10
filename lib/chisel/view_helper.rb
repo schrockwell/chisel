@@ -35,14 +35,14 @@ module Chisel
 		end
 	
 		def link_to_page(page, text, options = {})			
-			page_output_path = @site_dir.page_output_path(page)
+			page_output_path = @site_dir.page_output_path(page, @output_path.dirname)
 			href = page_output_path.relative_path_from(@output_path.dirname).to_s
 		
 			link_to(href, text, options)
 		end
 	
 		def path_to(site_relative_path)
-			@site_dir.output_dir.join(site_relative_path).relative_path_from(@output_path.dirname)
+			@site_dir.site_relative_path(site_relative_path, @output_path.dirname).relative_path_from(@output_path.dirname)
 		end
 
 		def link_to(href, text, options = {})

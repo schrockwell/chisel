@@ -61,9 +61,9 @@ module Chisel
 			self.output_dir.join(*resource.id, view_with_extension(view))
 		end
 	
-		def page_output_path(page)
+		def page_output_path(page, view_output_dir)
 			page = view_with_extension(page)
-			self.output_dir.join(page)
+			self.site_relative_path(page, view_output_dir)
 		end
 
 		def layout_view_path(layout_name)
@@ -72,6 +72,14 @@ module Chisel
 	
 		def view_path(view)
 			self.view_dir.join("#{view_with_extension(view)}.erb")
+		end
+		
+		def site_relative_path(relative_path, view_output_dir)
+			if relative_path[0] == '/'
+				self.output_dir.join(relative_path[1..-1])
+			else
+				view_output_dir.join(relative_path)
+			end
 		end
 	
 		def view_with_extension(view)
