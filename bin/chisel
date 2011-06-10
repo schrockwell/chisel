@@ -1,45 +1,120 @@
 #! /usr/bin/env ruby
 
 require 'chisel/wrapper'
+require 'filesystemwatcher/filesystemwatcher'
 require 'optparse'
+require 'webrick'
 
-module Chisel
-	if ARGV.count == 0
-		w = Wrapper.new('.')
-		w.run
-	else
+include WEBrick
+include Chisel
+
+def start_webrick(config = {})
+	server = HTTPServer.new(config)
+
+	yield server if block_given?
+	['INT', 'TERM'].each do |signal|
+	  trap(signal) { server.shutdown }
+	end
+
+	puts "\n*** Press Ctrl-C to stop the server ***\n\n"
+
+	server.start
+end
 	
-		case ARGV[0].downcase
+# Set up default command-line options
+
+options = {}
+options[:verbose] = false
+options[:server] = false
+options[:watch] = false
+options[:port] = 4000
+
+# Parse out options
+
+OptionParser.new do |opts|
+	opts.banner = 'Usage: chisel [options] [new|resource] [command]'
+	
+	opts.on('-v', '--verbose', 'Run verbosely') do |v|
+		options[:verbose] = v
+	end
+	
+	opts.on('-s', '--server [port]', 'Run local WEBrick server (default port 4000)') do |port|
+		options[:server] = true
+		options[:port] = port.to_i if port
+	end
+	
+	opts.on('-w', '--watch', 'Watch filesystem for changes and update automatically') do |w|
+		options[:watch] = w
+	end
+	
+end.parse!
+
+# Run the appropriate command
+
+if ARGV.count == 0
+	
+	site_dir = SiteDirectory.new('.')
+	
+	w = Wrapper.new(site_dir)
+	w.run
+	
+	if options[:watch]
+		puts 'File system watcher not yet implemented. Sorry!'
+		# TODO: Implement file system watcher
 		
-		when 'new'
-			# TODO: Add checking for existing site, with option to "force" creation
-		
-			if ARGV.length == 1 then
-				puts 'Creating new Chisel site in the current directory...'
-				SiteDirectory.create('.')
-				puts 'Done. Run \'chisel\' to create your site.'
-			else
-				dir = ARGV[1]
-				puts "Creating new Chisel site in directory '#{dir}'..."
-				SiteDirectory.create(dir)
-				puts "Done. Go into \'#{dir}\' and run \'chisel\' to create your site."
-			end
-		
-		when 'resource'
-			
-			if ARGV.length == 1 then
-				# TODO: Something
-			else
-				site_dir = SiteDirectory.new('.')
-				case ARGV[1].downcase
-				when 'new'
-					site_dir.create_resource(ARGV[2])
-				end
-			end
-		
-		when 'help'
-		
+		# watcher = FileSystemWatcher.new
+		# watcher.addDirectory(site_dir.realdirpath.to_s, '*.*')
+		# 
+		# site_dir.entries.each do |entry|
+		# 	
+		# end
+		# 
+		# watcher.sleepTime = 1
+		# watcher.start do |status, file|
+		# 	w1 = Wrapper.new(site_dir)
+		# 	w1.run
+		# end
+		# watcher.join
+	end
+	
+	if options[:server]
+		output_dir = site_dir.output_dir.realdirpath.to_s
+		start_webrick(:DocumentRoot => output_dir, :Port => options[:port])
+	end
+	
+else
+
+	case ARGV[0].downcase
+	
+	when 'new'
+		# TODO: Add checking for existing site, with option to "force" creation
+	
+		if ARGV.length == 1 then
+			puts 'Creating new Chisel site in the current directory...'
+			SiteDirectory.create('.')
+			puts 'Done. Run \'chisel\' to create your site.'
+		else
+			dir = ARGV[1]
+			puts "Creating new Chisel site in directory '#{dir}'..."
+			SiteDirectory.create(dir)
+			puts "Done. Go into \'#{dir}\' and run \'chisel\' to create your site."
 		end
 	
+	when 'resource'
+		
+		if ARGV.length == 1 then
+			# TODO: Something
+		else
+			site_dir = SiteDirectory.new('.')
+			case ARGV[1].downcase
+			when 'new'
+				# TODO: Check that ARGV[2] exists and show help otherwise
+				site_dir.create_resource(ARGV[2])
+			end
+		end
+	
+	when 'help'
+	
 	end
+
 end
