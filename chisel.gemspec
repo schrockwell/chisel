@@ -12,4 +12,8 @@ Gem::Specification.new do |s|
 	
 	s.require_path = 'lib' 
 	s.files = Dir.glob("lib/**/*")
+	
+	s.add_dependency('RedCloth', '>= 4.2.7')
+	s.add_dependency('maruku', '>= 0.6.0')
+	
 end
