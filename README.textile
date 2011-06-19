@@ -1,8 +1,8 @@
 h1. Chisel
 
-Chisel is tool to generate simple, resource-based static Web sites. Hosting for a static Web site is cheap and easy to deploy. You'd like to take advantage of some conveniences offered by server-side frameworks (PHP, Ruby on Rails, etc.), but these solutions are overly complex and you don't want to devote server resources to a trivial application.
+*Chisel is tool to generate simple, resource-based static Web sites.* Hack together some pages in HTML and CSS, taking advantage of ERB and markup languages like Textile and markdown, and write your resource classes in pure Ruby.
 
-Enter Chisel. You get:
+h2. Features
 
 * *Nested page layouts* -- Because you hate Dreamweaver templates 
 * *Resource-centric design* -- Similar to models in Ruby on Rails, but more flexible
@@ -15,57 +15,73 @@ h2. Who are you?
 You are...
 
 * ...a Web developer familiar with HTML, CSS, JS, blah, blah, blah
-* ...comfortable hacking around in Ruby
-* ...fond of open-source software
+* ...comfortable hacking around in Ruby (probably familiar with Rails)
+* ...looking for an easy way to create a relatively complex static-HTML Web site
 * ...probably good-looking, smart, and funny
 
 h1. Getting started
 
 h2. First-timers
 
+<pre>
+<code>
 gem install chisel
-git clone (url) demos
+git clone git@github.com:schrockwell/chisel-demos.git demos
 cd demos/blog
 chisel -s
+</code>
+</pre>
 
-Go to http://localhost:4000/ in a Web browser (you use Lynx, don't you? I could tell) to see what you've done.
+Go to http://localhost:4000/ in a Web browser to see what you've done.
 
 Here's a synopsis of the site's directory structure:
 
-_config.yml - YAML site configuration file; use it to pass arbitrary data on to your site
-_resources/ - Contains the pure Ruby resource class files
-_views/ - Contains pages and partial pages that are rendered by Chisel
-_views/_layout/ - Put your layouts here
-_views/_layout/main.html.erb - A default layout
-index.html.erb - Your very own home in Cyberspace
+* @_config.yml@ - YAML site configuration file; use it to pass arbitrary data on to pages in your site
+* @_resources/@ - Contains the pure Ruby resource class files
+* @_views/@ - Contains pages and partial pages that are rendered by Chisel
+* @_views/_layout/@ - Put your layouts here
+* @_views/_layout/main.html.erb@ - A default layout
+* @index.html.erb@ - Your very own home in Cyberspace
 
 h2. Seasoned veterans
 
+<pre>
+<code>
 gem install chisel
 mkdir facebook_two
 cd facebook_two
 chisel new
 chisel -s
+</code>
+</pre>
 
-Point your Web browser of choice at http://localhost:4000/ to see your fancy new Chisel site.
+Point your Web browser of choice at @http://localhost:4000/@ to see your fancy new Chisel site.
 
 h1. It's not a bug, it's a feature!
 
 h2. How files are handled
 
-* Every file to be evaluated must have a ".erb" extension
+* Every file with an @.erb@ extension is evaulated by Chisel
 * Files and directories beginning with underscores are ignored
 * Append markup languages as extensions, e.g.: about.html.textile.erb
+* All other files and directories are copied verbatim
 
-Every page you want Chisel to evaluate must have a ".erb" extension. Every other file and directory will be copied blindly to the output directory, _except_ for files and directories beginning with an underscore (_). These have a special meaning to Chisel.
+In words: Every page you want Chisel to evaluate must have a @.erb@ extension. Every other file and directory will be copied blindly to the output directory, _except_ for files and directories beginning with an underscore (_). These have a special meaning to Chisel.
 
-h1. Configuration options
+h1. Configuration options (_config.yml)
 
-* *output_dir* _(default: _output)_ - A string pointing to the directory that will contain the generated site. If you run Chisel directly on your Web server, you can configure output_dir to instantly publish your site.
+* *output_dir* _(default: _output)_ - A string pointing to the directory that will contain the generated site. If you run Chisel directly on your Web server, you can configure @output_dir@ to instantly publish your site.
 
 That's it! Any other options you specify will be passed on to views in the @config variable.
 
 h1. Extra credit
 
-* Add "Disqus":link to your blog posts so users can leave comments
+* Add "Disqus":http://disqus.com/ to your blog posts so users can leave comments
 * Post a link to your Chisel-powered site in "the Wiki":link
+
+h1. If you liked Chisel, you may also enjoy...
+
+* "Jekyll":http://jekyllrb.com/ -- Chisel draws many ideas from this static blogging engine created for GitHub
+* "webgen":http://webgen.rubyforge.org/ -- A more mature, full-featured Ruby static site generator
+* "Textile Reference":http://redcloth.org/hobix.com/textile/ -- Textile is my markup language of choice
+* "Markdown Reference":http://daringfireball.net/projects/markdown/ -- Markdown is another popular one
