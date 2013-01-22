@@ -68,7 +68,7 @@ module Chisel
 				output_path = file_output_dir.join(output_basename)
 			end
 		
-			return if @@output_paths.index(output_path) or output_path.exist?
+			return if @@output_paths.index(output_path)
 			@@output_paths << output_path
 		
 			FileUtils.mkdir_p(output_path.dirname)

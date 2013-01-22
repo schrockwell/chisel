@@ -10,8 +10,10 @@
 ###############################################################################
 
 # The output directory is the root directory where the site will be generated. 
-# This directory will be completely replaced every time the generator is run.
 output_dir: _output
+
+# This directory will be completely replaced every time the generator is run.
+replace_output_dir: yes
 
 # Any further configuration options specified will be available to views in the 
 # variable @config.

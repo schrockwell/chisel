@@ -42,8 +42,8 @@ module Chisel
 		end
 	
 		def clear_output_dir
-			FileUtils.rm_r(output_dir) if File.exists?(output_dir)
-			FileUtils.mkdir(output_dir)
+			FileUtils.rm_r(output_dir) if File.exists?(output_dir) and @config['replace_output_dir'] != false
+			FileUtils.mkdir_p(output_dir)
 		end
 	
 		def require_resources
