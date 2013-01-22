@@ -23,10 +23,16 @@ module Chisel
 			@cache ||= {}
 			cached = true
 			keys.each { |key| cached &= @cache.key?(key) }
-			return keys.map { |key| @cache[key] } if cached
+			if cached
+				if keys.size == 1
+					return @cache[keys[0]]
+				else
+					return keys.map { |key| @cache[key] }
+				end
+			end
 			if keys.size == 1
 				results = yield
-				@cache[keys[0]] == results
+				@cache[keys[0]] = results
 			else
 				results = [*yield]
 				keys.each_index { |i| @cache[keys[i]] = results[i] }
@@ -37,10 +43,16 @@ module Chisel
 		def self.class_cache(*keys)
 			cached = true
 			keys.each { |key| cached &= @@cache.key?(key) }
-			return keys.map { |key| @@cache[key] } if cached
+			if cached
+				if keys.size == 1
+					return @@cache[keys[0]]
+				else
+					return keys.map { |key| @@cache[key] }
+				end
+			end
 			if keys.size == 1
 				results = yield
-				@@cache[keys[0]] == results
+				@@cache[keys[0]] = results
 			else
 				results = [*yield]
 				keys.each_index { |i| @@cache[keys[i]] = results[i] }
